@@ -16,8 +16,8 @@ namespace ProgrammersBlog.Shared.Data.Concrete.EntityFramework
         private readonly DbContext _context;
 
         public EfEntityRepositoryBase(DbContext context)
-        {
-            _context = context;
+        {   
+            _context = context;  // Dependency Injection
         }
 
         public async Task AddAsync(TEntity entity)

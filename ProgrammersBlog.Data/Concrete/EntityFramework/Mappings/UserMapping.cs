@@ -45,6 +45,26 @@ namespace ProgrammersBlog.Data.Concrete.EntityFramework.Mappings
 
             // Tabloyu oluştur.
             builder.ToTable("Users");
+
+            // Initialize işlemleri : HasData() metodu veritabanında kayıt yoksa eklenmesini sağlar.
+            builder.HasData(new User { 
+                Id = 1,
+                RoleId = 1,
+                FirstName = "Fatih",
+                LastName = "Aydin",
+                Username = "fatay",
+                Email = "fataycomputers@gmail.com",
+                IsActive = true,
+                IsDeleted = false,
+                CreatedByName = "InitialCreate",
+                CreatedDate = DateTime.Now,
+                ModifiedByName = "InitialModify",
+                ModifiedDate = DateTime.Now,
+                Description = "Admin Kullanıcısı",
+                Note = "Admin kullanıcısıdır.",
+                PasswordHash = Encoding.ASCII.GetBytes("0192023a7bbd73250516f069df18b500"),
+                Picture = "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcSX4wVGjMQ37PaO4PdUVEAliSLi8-c2gJ1zvQ&usqp=CAU"
+            });
         }
     }
 }

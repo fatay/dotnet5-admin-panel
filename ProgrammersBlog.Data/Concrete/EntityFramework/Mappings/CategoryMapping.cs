@@ -28,6 +28,47 @@ namespace ProgrammersBlog.Data.Concrete.EntityFramework.Mappings
             builder.Property(c => c.ModifiedDate).IsRequired(true);     
             builder.Property(c => c.Note).IsRequired(true);
             builder.ToTable("Categories");
+
+            // Initialize işlemleri : HasData() metodu veritabanında kayıt yoksa eklenmesini sağlar.
+            builder.HasData(
+            new Category
+            {
+                Id = 1,
+                Name = "C#",
+                Description = "C# Programlama Dili İle İlgili En Güncel Bilgiler",
+                IsActive = true,
+                IsDeleted = false,
+                CreatedByName = "InitialCreate",
+                CreatedDate = DateTime.Now,
+                ModifiedByName = "InitialModify",
+                ModifiedDate = DateTime.Now,
+                Note = "C# Blog Kategorisi"
+            },
+            new Category {
+                Id = 2,
+                Name = "C++",
+                Description = "C++ Programlama Dili İle İlgili En Güncel Bilgiler",
+                IsActive = true,
+                IsDeleted = false,
+                CreatedByName = "InitialCreate",
+                CreatedDate = DateTime.Now,
+                ModifiedByName = "InitialModify",
+                ModifiedDate = DateTime.Now,
+                Note = "C++ Blog Kategorisi"
+            },
+            new Category
+            {
+                Id = 3,
+                Name = "JavaScript",
+                Description = "JavaScript Programlama Dili İle İlgili En Güncel Bilgiler",
+                IsActive = true,
+                IsDeleted = false,
+                CreatedByName = "InitialCreate",
+                CreatedDate = DateTime.Now,
+                ModifiedByName = "InitialModify",
+                ModifiedDate = DateTime.Now,
+                Note = "JavaScript Blog Kategorisi"
+            });
         }
     }
 }

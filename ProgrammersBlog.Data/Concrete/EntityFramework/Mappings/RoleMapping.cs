@@ -31,6 +31,22 @@ namespace ProgrammersBlog.Data.Concrete.EntityFramework.Mappings
 
             // Tabloyu oluştur.
             builder.ToTable("Roles");
+
+            // Initialize işlemleri : HasData() metodu veritabanında kayıt yoksa eklenmesini sağlar.
+            builder.HasData(
+            new Role
+            {
+                Id = 1,
+                Name = "Admin",
+                Description = "Admin Rolü, tüm yetkilere sahiptir.",
+                IsActive = true,
+                IsDeleted = false,
+                CreatedByName = "InitialCreate",
+                CreatedDate = DateTime.Now,
+                ModifiedByName = "InitialModify",
+                ModifiedDate = DateTime.Now,
+                Note = "Admin Rolüdür."
+            });
         }
     }
 }

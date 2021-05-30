@@ -55,16 +55,106 @@ namespace ProgrammersBlog.Data.Concrete.EntityFramework.Mappings
             // Note
             builder.Property(a => a.Note).IsRequired(true);             // Zorunlu alandır.
 
-            /*********************** DATABASE RELEATIONSHIPS *******************************/
+            /***************************************** DATABASE RELEATIONSHIPS ****************************************/
             // !!! Foreign key ile dışarıdan Id aldığımızda releationship eklememiz gerekiyor.
             // Article ile Category arasında 1 - n ilişki olmalıdır [Bir kategorinin birden fazla makalesi olabilir].
             builder.HasOne<Category>(a => a.Category).WithMany(c => c.Articles).HasForeignKey(a => a.CategoryId);
             // Article ile User arasında 1 - n ilişki olmalıdır. [Bir kullanıcının birden fazla makalesi olabilir].
             builder.HasOne<User>(a => a.User).WithMany(u => u.Articles).HasForeignKey(a => a.UserId);
-            /********************************************************************************/
+            /**********************************************************************************************************/
 
             // Tabloya dönüştür
-            builder.ToTable("Articles");            
+            builder.ToTable("Articles");
+
+            // Initialize işlemleri : HasData() metodu veritabanında kayıt yoksa eklenmesini sağlar.
+            builder.HasData(
+            new Article
+            {
+                Id = 1,
+                CategoryId = 1,
+                UserId = 1,
+                Title = "C# 9.0 ve .NET5 Yenilikleri",
+                Content = @" Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
+                             Suspendisse sagittis blandit faucibus. Praesent mollis posuere vulputate. 
+                             Pellentesque mollis risus varius nisl facilisis venenatis. 
+                             Sed varius ante lorem, tristique varius mauris mollis eget. 
+                             Ut dictum velit ut iaculis placerat. Donec dignissim tortor non orci dapibus lobortis. 
+                             Proin vitae convallis metus, ut fermentum lacus. Etiam condimentum tristique finibus. 
+                             Fusce convallis, ligula eget cursus imperdiet, turpis ante iaculis turpis, at fermentum purus risus non ante. 
+                             Nunc sagittis nulla mattis metus interdum tempor.",
+                Thumbnail = "default.jpg",
+                SeoDescription = "C# 9.0 ve .NET5 Yenilikleri",
+                SeoTags = "C#, C# 9.0, .NET5, .NET Core, .NET Framework",
+                SeoAuthor = "Fatih Aydin",
+                Date = DateTime.Now,
+                IsActive = true,
+                IsDeleted = false,
+                CreatedByName = "InitialCreate",
+                CreatedDate = DateTime.Now,
+                ModifiedByName = "InitialModify",
+                ModifiedDate = DateTime.Now,
+                Note = "C# 9.0 ve .NET5 Yenilikleri",
+                ViewsCount = 80,
+                CommentCount = 1
+            },
+            new Article
+            {
+                Id = 2,
+                CategoryId = 2,
+                UserId = 1,
+                Title = "C++ 11 ve 19 Yenilikleri",
+                Content = @" Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
+                             Suspendisse sagittis blandit faucibus. Praesent mollis posuere vulputate. 
+                             Pellentesque mollis risus varius nisl facilisis venenatis. 
+                             Sed varius ante lorem, tristique varius mauris mollis eget. 
+                             Ut dictum velit ut iaculis placerat. Donec dignissim tortor non orci dapibus lobortis. 
+                             Proin vitae convallis metus, ut fermentum lacus. Etiam condimentum tristique finibus. 
+                             Fusce convallis, ligula eget cursus imperdiet, turpis ante iaculis turpis, at fermentum purus risus non ante. 
+                             Nunc sagittis nulla mattis metus interdum tempor.",
+                Thumbnail = "default.jpg",
+                SeoDescription = "C++ 11 ve 19 Yenilikleri",
+                SeoTags = "C++, Object Oriented Programming, C++ 11, QT",
+                SeoAuthor = "Fatih Aydin",
+                Date = DateTime.Now,
+                IsActive = true,
+                IsDeleted = false,
+                CreatedByName = "InitialCreate",
+                CreatedDate = DateTime.Now,
+                ModifiedByName = "InitialModify",
+                ModifiedDate = DateTime.Now,
+                Note = "C++ 11 ve 19 Yenilikleri",
+                ViewsCount = 100,
+                CommentCount = 1
+            },
+            new Article
+            {
+                Id = 3,
+                CategoryId = 3,
+                UserId = 1,
+                Title = "JavaScipt ES6 Nedir?",
+                Content = @" Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
+                             Suspendisse sagittis blandit faucibus. Praesent mollis posuere vulputate. 
+                             Pellentesque mollis risus varius nisl facilisis venenatis. 
+                             Sed varius ante lorem, tristique varius mauris mollis eget. 
+                             Ut dictum velit ut iaculis placerat. Donec dignissim tortor non orci dapibus lobortis. 
+                             Proin vitae convallis metus, ut fermentum lacus. Etiam condimentum tristique finibus. 
+                             Fusce convallis, ligula eget cursus imperdiet, turpis ante iaculis turpis, at fermentum purus risus non ante. 
+                             Nunc sagittis nulla mattis metus interdum tempor.",
+                Thumbnail = "default.jpg",
+                SeoDescription = "ECMASCRIPT ve JavaScript ES6",
+                SeoTags = "JavScript, ES6, ECMAScript",
+                SeoAuthor = "Fatih Aydin",
+                Date = DateTime.Now,
+                IsActive = true,
+                IsDeleted = false,
+                CreatedByName = "InitialCreate",
+                CreatedDate = DateTime.Now,
+                ModifiedByName = "InitialModify",
+                ModifiedDate = DateTime.Now,
+                Note = "ECMASCRIPT ve JavaScript ES6",
+                ViewsCount = 2940,
+                CommentCount = 1
+            }); 
         }
     }
 }

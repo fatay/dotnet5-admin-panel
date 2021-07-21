@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using ProgrammersBlog.Services.AutoMapper.Profiles;
 using ProgrammersBlog.Services.Extentions;
 
 namespace ProgrammersBlog.MVC
@@ -13,7 +14,7 @@ namespace ProgrammersBlog.MVC
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews().AddRazorRuntimeCompilation(); // MVC uygulamasý olacaðýnýn ve eþzamanlý güncelleneceðinin  tanýmlamasýný yapýyoruz.
-            services.AddAutoMapper(typeof(Startup)); // IMapper, IProfile gibi mapping sýnýflarýný ekle.
+            services.AddAutoMapper(typeof(CategoryProfile), typeof(ArticleProfile)); // IMapper, IProfile gibi mapping sýnýflarýný ekle.
             services.LoadMyServices();
         }
 

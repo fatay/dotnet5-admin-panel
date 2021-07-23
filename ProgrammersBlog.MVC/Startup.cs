@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using ProgrammersBlog.Services.AutoMapper.Profiles;
 using ProgrammersBlog.Services.Extentions;
+using System.Text.Json.Serialization;
 
 namespace ProgrammersBlog.MVC
 {
@@ -13,7 +14,13 @@ namespace ProgrammersBlog.MVC
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllersWithViews().AddRazorRuntimeCompilation(); // MVC uygulamasý olacaðýnýn ve eþzamanlý güncelleneceðinin  tanýmlamasýný yapýyoruz.
+            // MVC uygulamasý olacaðýnýn ve eþzamanlý güncelleneceðinin  tanýmlamasýný yapýyoruz.
+            services.AddControllersWithViews().AddRazorRuntimeCompilation().AddJsonOptions(opt=> {
+                // Json formatýnda iþlem yapabilmek için JsonSerializer adlý kütüphaneyi kullanýyoruz.
+                // Bu kütüphanenin ayarlamalarýný aþaðýdaki þekilde gerçekleþtiriyoruz.
+                opt.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+                opt.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
+            }); 
             services.AddAutoMapper(typeof(CategoryProfile), typeof(ArticleProfile)); // IMapper, IProfile gibi mapping sýnýflarýný ekle.
             services.LoadMyServices();
         }

@@ -318,23 +318,30 @@
                                 placeHolderDiv.find('.modal').modal('hide');
                                 let newTableRow = `
                                 <tr>
-                                    <td>${categoryAddAjaxModel.CategoryDto.Id}</td>
-                                    <td>${categoryAddAjaxModel.CategoryDto.Name}</td>
-                                    <td>${categoryAddAjaxModel.CategoryDto.Description}</td>
-                                    <td>${categoryAddAjaxModel.CategoryDto.IsActive}</td>
-                                    <td>${categoryAddAjaxModel.CategoryDto.IsDeleted}</td>
-                                    <td>${categoryAddAjaxModel.CategoryDto.Note}</td>
-                                    <td>${categoryAddAjaxModel.CategoryDto.CreatedDate}</td>
-                                    <td>${categoryAddAjaxModel.CategoryDto.CreatedByName}</td>
-                                    <td>${categoryAddAjaxModel.CategoryDto.ModifiedDate}</td>
-                                    <td>${categoryAddAjaxModel.CategoryDto.ModifiedByName}</td>
+                                    <td>${categoryAddAjaxModel.CategoryDto.Category.Id}</td>
+                                    <td>${categoryAddAjaxModel.CategoryDto.Category.Name}</td>
+                                    <td>${categoryAddAjaxModel.CategoryDto.Category.Description}</td>
+                                    <td>${ConvertFirstLetterToUpperCase(categoryAddAjaxModel.CategoryDto.Category.IsActive.toString())}</td>
+                                    <td>${ConvertFirstLetterToUpperCase(categoryAddAjaxModel.CategoryDto.Category.IsDeleted.toString())}</td>
+                                    <td>${categoryAddAjaxModel.CategoryDto.Category.Note}</td>
+                                    <td>${categoryAddAjaxModel.CategoryDto.Category.CreatedByName}</td>
+                                    <td>${ConvertToShortDate(categoryAddAjaxModel.CategoryDto.Category.CreatedDate)}</td>
+                                    <td>${ConvertToShortDate(categoryAddAjaxModel.CategoryDto.Category.ModifiedDate)}</td>
+                                    <td>${categoryAddAjaxModel.CategoryDto.Category.ModifiedByName}</td>
                                 </tr>
                                 `;
-                                let newTableRowObject = $(newTableRow); // String as an object.
+                                let newTableRowObject = $(newTableRow); // Stringin objeye dönüştürülme işlemi.
                                 newTableRowObject.hide();
                                 $('#categoriesTable').append(newTableRowObject);
                                 newTableRowObject.fadeIn(1500);
                                 toastr.success(`${categoryAddAjaxModel.CategoryDto.Message}`, 'İşlem Başarılı!');
+                            }
+                            else {
+                                $('#validation-summary > ul > li').each(function () {
+                                    let text = $(this).text();
+                                    summaryText = `*${text}\n`;
+                                });
+                                toastr.warning(summaryText);
                             }
                         });
                         e.preventDefault();

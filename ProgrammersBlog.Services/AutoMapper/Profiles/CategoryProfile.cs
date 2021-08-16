@@ -13,8 +13,11 @@ namespace ProgrammersBlog.Services.AutoMapper.Profiles
     {
         public CategoryProfile()
         {
-            CreateMap<CategoryAddDto, Category>().ForMember(c => c.CreatedDate, opt => opt.MapFrom(x => DateTime.Now));
-            CreateMap<CategoryUpdateDto, Category>().ForMember(c => c.ModifiedByName, opt => opt.MapFrom(x => DateTime.Now));
+            CreateMap<CategoryAddDto, Category>()
+                .ForMember(c => c.CreatedDate, opt => opt.MapFrom(x => DateTime.Now));
+            CreateMap<CategoryUpdateDto, Category>()
+                .ForMember(c => c.ModifiedByName, opt => opt.MapFrom(x => DateTime.Now));
+            CreateMap<Category, CategoryUpdateDto>();
         }
     }
 }

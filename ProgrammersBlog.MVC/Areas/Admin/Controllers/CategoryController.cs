@@ -6,6 +6,7 @@ using ProgrammersBlog.Entities.Dtos;
 using ProgrammersBlog.MVC.Areas.Admin.Models;
 using ProgrammersBlog.Shared.Utilities.Extensions;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace ProgrammersBlog.MVC.Areas.Admin.Controllers
 {
@@ -21,9 +22,10 @@ namespace ProgrammersBlog.MVC.Areas.Admin.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var result = await _categoryService.GetAll();
+            var result = await _categoryService.GetAllByNonDeleted();
             return View(result.Data);
         }
+
         [HttpGet]
         public IActionResult Add()
         {
@@ -51,6 +53,60 @@ namespace ProgrammersBlog.MVC.Areas.Admin.Controllers
                 CategoryAddPartial = await this.RenderViewToStringAsync("_CategoryAddPartial", categoryAddDto)
             });
             return Json(categoryAddAjaxErrorModel);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Update(int categoryId)
+        {
+            var result = await _categoryService.GetCategoryUpdateDto(categoryId);
+            if (result.ResultStatus == ResultStatus.Success)
+            {
+                return PartialView("_CategoryUpdatePartial", result.Data);
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Update(CategoryUpdateDto categoryUpdateDto)
+        {
+            if (ModelState.IsValid)
+            {
+                var result = await _categoryService.Update(categoryUpdateDto, "Fatih Aydin");
+                if (result.ResultStatus == ResultStatus.Success)
+                {
+                    var categoryUpdateAjaxModel = JsonSerializer.Serialize(new CategoryUpdateAjaxViewModel
+                    {
+                        CategoryDto = result.Data,
+                        CategoryUpdatePartial = await this.RenderViewToStringAsync("_CategoryUpdatePartial", categoryUpdateDto)
+                    });
+                    return Json(categoryUpdateAjaxModel);
+                }
+            }
+            var categoryUpdateAjaxErrorModel = JsonSerializer.Serialize(new CategoryUpdateAjaxViewModel
+            {
+                CategoryUpdatePartial = await this.RenderViewToStringAsync("_CategoryUpdatePartial", categoryUpdateDto)
+            });
+            return Json(categoryUpdateAjaxErrorModel);
+        }
+
+        public async Task<JsonResult> GetAllCategories()
+        {
+            var result = await _categoryService.GetAllByNonDeleted();
+            var categories = JsonSerializer.Serialize(result.Data, new JsonSerializerOptions() { 
+                ReferenceHandler = ReferenceHandler.Preserve
+            });
+            return Json(categories);
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> Delete(int categoryId)
+        {
+            var result = await _categoryService.Delete(categoryId, "Fatih Aydin");
+            var deletedCategory = JsonSerializer.Serialize(result.Data);
+            return Json(deletedCategory);
         }
     }
 }

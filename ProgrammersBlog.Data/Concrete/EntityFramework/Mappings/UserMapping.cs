@@ -9,62 +9,46 @@ using System.Threading.Tasks;
 
 namespace ProgrammersBlog.Data.Concrete.EntityFramework.Mappings
 {
-    public class UserMapping : IEntityTypeConfiguration<User>
+    public class UserMapping : Microsoft.EntityFrameworkCore.IEntityTypeConfiguration<User>
     {
         public void Configure(EntityTypeBuilder<User> builder)
         {
-            builder.HasKey(u => u.Id);
-            builder.Property(u => u.Id).ValueGeneratedOnAdd();
-            builder.Property(u => u.Email).IsRequired(true);
-            builder.Property(u => u.Email).HasMaxLength(60);
-            builder.HasIndex(u => u.Email).IsUnique(true);
-            builder.Property(u => u.Username).IsRequired(true);
-            builder.Property(u => u.Username).HasMaxLength(24);
-            builder.HasIndex(u => u.Username).IsUnique(true);
-            builder.Property(u => u.PasswordHash).IsRequired(true);
-            builder.Property(u => u.PasswordHash).HasColumnType("VARBINARY(480)");
-            builder.Property(u => u.Description).HasMaxLength(480);
-            builder.Property(u => u.FirstName).IsRequired(true);
-            builder.Property(u => u.FirstName).HasMaxLength(32);
-            builder.Property(u => u.LastName).IsRequired(true);
-            builder.Property(u => u.LastName).HasMaxLength(32);
             builder.Property(u => u.Picture).IsRequired(true);
             builder.Property(u => u.Picture).HasMaxLength(240);
-            builder.Property(u => u.CreatedByName).HasMaxLength(50);
-            builder.Property(u => u.CreatedByName).IsRequired(true);
-            builder.Property(u => u.ModifiedByName).HasMaxLength(50);
-            builder.Property(u => u.ModifiedByName).IsRequired(true);
-            builder.Property(u => u.IsActive).IsRequired(true);
-            builder.Property(u => u.IsDeleted).IsRequired(true);
-            builder.Property(u => u.CreatedDate).IsRequired(true);
-            builder.Property(u => u.ModifiedDate).IsRequired(true);
-            builder.Property(u => u.Note).IsRequired(true);
 
-            // Role ile User arasında 1 - n ilişki olmalıdır.
-            builder.HasOne<Role>(u => u.Role).WithMany(r => r.Users).HasForeignKey(u => u.RoleId);
+            // Primary key
+            builder.HasKey(u => u.Id);
 
-            // Tabloyu oluştur.
-            builder.ToTable("Users");
+            // Indexes for "normalized" username and email, to allow efficient lookups
+            builder.HasIndex(u => u.NormalizedUserName).HasDatabaseName("UserNameIndex").IsUnique();
+            builder.HasIndex(u => u.NormalizedEmail).HasDatabaseName("EmailIndex");
 
-            // Initialize işlemleri : HasData() metodu veritabanında kayıt yoksa eklenmesini sağlar.
-            builder.HasData(new User { 
-                Id = 1,
-                RoleId = 1,
-                FirstName = "Fatih",
-                LastName = "Aydin",
-                Username = "fatay",
-                Email = "fataycomputers@gmail.com",
-                IsActive = true,
-                IsDeleted = false,
-                CreatedByName = "InitialCreate",
-                CreatedDate = DateTime.Now,
-                ModifiedByName = "InitialModify",
-                ModifiedDate = DateTime.Now,
-                Description = "Admin Kullanıcısı",
-                Note = "Admin kullanıcısıdır.",
-                PasswordHash = Encoding.ASCII.GetBytes("0192023a7bbd73250516f069df18b500"),
-                Picture = "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcSX4wVGjMQ37PaO4PdUVEAliSLi8-c2gJ1zvQ&usqp=CAU"
-            });
+            // Maps to the AspNetUsers table
+            builder.ToTable("AspNetUsers");
+
+            // A concurrency token for use with the optimistic concurrency checking
+            builder.Property(u => u.ConcurrencyStamp).IsConcurrencyToken();
+
+            // Limit the size of columns to use efficient database types
+            builder.Property(u => u.UserName).HasMaxLength(50);
+            builder.Property(u => u.NormalizedUserName).HasMaxLength(50);
+            builder.Property(u => u.Email).HasMaxLength(80);
+            builder.Property(u => u.NormalizedEmail).HasMaxLength(80);
+
+            // The relationships between User and other entity types
+            // Note that these relationships are configured with no navigation properties
+
+            // Each User can have many UserClaims
+            builder.HasMany<UserClaim>().WithOne().HasForeignKey(uc => uc.UserId).IsRequired();
+
+            // Each User can have many UserLogins
+            builder.HasMany<UserLogin>().WithOne().HasForeignKey(ul => ul.UserId).IsRequired();
+
+            // Each User can have many UserTokens
+            builder.HasMany<UserToken>().WithOne().HasForeignKey(ut => ut.UserId).IsRequired();
+
+            // Each User can have many entries in the UserRole join table
+            builder.HasMany<UserRole>().WithOne().HasForeignKey(ur => ur.UserId).IsRequired();
         }
     }
 }

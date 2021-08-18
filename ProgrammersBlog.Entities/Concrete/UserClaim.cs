@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using ProgrammersBlog.Shared.Entities.Abstract;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace ProgrammersBlog.Entities.Concrete
 {
-    public class Role:IdentityRole<int>
-    {
-        // Entity Framework Identity Core ve Identity Store NuGet paketleri yüklendi.
+    public class UserClaim:IdentityUserClaim<int>
+    { 
+
     }
 }

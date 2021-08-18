@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace ProgrammersBlog.Data.Concrete.EntityFramework.Mappings
 {
-    public class ArticleMapping : IEntityTypeConfiguration<Article>
+    public class ArticleMapping : Microsoft.EntityFrameworkCore.IEntityTypeConfiguration<Article>
     {
         // Builder fonksiyonunda lamda expression kullanıyoruz a => a.property
         public void Configure(EntityTypeBuilder<Article> builder)

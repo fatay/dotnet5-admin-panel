@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace ProgrammersBlog.Data.Concrete.EntityFramework.Mappings
 {
-    public class CategoryMapping : IEntityTypeConfiguration<Category>
+    public class CategoryMapping : Microsoft.EntityFrameworkCore.IEntityTypeConfiguration<Category>
     {
         public void Configure(EntityTypeBuilder<Category> builder)
         {

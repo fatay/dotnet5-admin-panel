@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace ProgrammersBlog.Data.Concrete.EntityFramework.Mappings
 {
-    public class CommentMapping : IEntityTypeConfiguration<Comment>
+    public class CommentMapping : Microsoft.EntityFrameworkCore.IEntityTypeConfiguration<Comment>
     {
         public void Configure(EntityTypeBuilder<Comment> builder)
         {

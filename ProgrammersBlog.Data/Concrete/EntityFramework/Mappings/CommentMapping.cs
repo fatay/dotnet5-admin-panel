@@ -35,44 +35,43 @@ namespace ProgrammersBlog.Data.Concrete.EntityFramework.Mappings
             builder.ToTable("Comments");
 
             // Initialize işlemleri : HasData() metodu veritabanında kayıt yoksa eklenmesini sağlar.
-            builder.HasData(
-            new Comment { 
-                Id = 1,
-                ArticleId = 1,
-                Text = "Yorum satırı - 1",
-                IsActive = true,
-                IsDeleted = false,
-                CreatedByName = "InitialCreate",
-                CreatedDate = DateTime.Now,
-                ModifiedByName = "InitialModify",
-                ModifiedDate = DateTime.Now,
-                Note = "C# Makale Yorumu"
-            },
-            new Comment {
-                Id = 2,
-                ArticleId = 2,
-                Text = "Yorum satırı - 2",
-                IsActive = true,
-                IsDeleted = false,
-                CreatedByName = "InitialCreate",
-                CreatedDate = DateTime.Now,
-                ModifiedByName = "InitialModify",
-                ModifiedDate = DateTime.Now,
-                Note = "C++ Makale Yorumu"
-            },
-            new Comment {
-                Id = 3,
-                ArticleId = 3,
-                Text = "Yorum satırı - 3",
-                IsActive = true,
-                IsDeleted = false,
-                CreatedByName = "InitialCreate",
-                CreatedDate = DateTime.Now,
-                ModifiedByName = "InitialModify",
-                ModifiedDate = DateTime.Now,
-                Note = "JavaScript Makale Yorumu"
-            });
-
+            //builder.HasData(
+            //new Comment { 
+            //    Id = 1,
+            //    ArticleId = 1,
+            //    Text = "Yorum satırı - 1",
+            //    IsActive = true,
+            //    IsDeleted = false,
+            //    CreatedByName = "InitialCreate",
+            //    CreatedDate = DateTime.Now,
+            //    ModifiedByName = "InitialModify",
+            //    ModifiedDate = DateTime.Now,
+            //    Note = "C# Makale Yorumu"
+            //},
+            //new Comment {
+            //    Id = 2,
+            //    ArticleId = 2,
+            //    Text = "Yorum satırı - 2",
+            //    IsActive = true,
+            //    IsDeleted = false,
+            //    CreatedByName = "InitialCreate",
+            //    CreatedDate = DateTime.Now,
+            //    ModifiedByName = "InitialModify",
+            //    ModifiedDate = DateTime.Now,
+            //    Note = "C++ Makale Yorumu"
+            //},
+            //new Comment {
+            //    Id = 3,
+            //    ArticleId = 3,
+            //    Text = "Yorum satırı - 3",
+            //    IsActive = true,
+            //    IsDeleted = false,
+            //    CreatedByName = "InitialCreate",
+            //    CreatedDate = DateTime.Now,
+            //    ModifiedByName = "InitialModify",
+            //    ModifiedDate = DateTime.Now,
+            //    Note = "JavaScript Makale Yorumu"
+            //});
         }
     }
 }

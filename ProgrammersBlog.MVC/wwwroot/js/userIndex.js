@@ -302,6 +302,7 @@
                             userAddAjaxModel.UserDto.User.Email,
                             userAddAjaxModel.UserDto.User.PhoneNumber,
                             userAddAjaxModel.UserDto.User.Picture,
+                            `<img src="/img/${userAddAjaxModel.UserDto.User.Picture}" style="max-width:160px" alt="${userAddAjaxModel.UserDto.User.Picture}"/>`,
                             `<td class="edit-icon">
                                 <button class="btn btn-primary btn-edit btn-sm" data-id="userAddAjaxModel.UserDto.User.Id"><span class="fas fa-edit"></span></button>
                                 <button class="btn btn-danger btn-delete btn-sm" data-id="userAddAjaxModel.UserDto.User.Id"><span class="fas fa-minus-circle"></span></button>

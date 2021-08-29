@@ -30,26 +30,21 @@
                             $('.spinner-border').show();
                         },
                         success: function (data) {
-                            const userListDto = jQuery.parseJSON(data);
-                            // 0 ise işlem başarılı demektir. 1 ise işlem başarılı değil demektir.
-                            if (categoryListDto.ResultStatus === 0) {
-                                let tableBody = "";
-                                $.each(userListDto.Users.$values, function (index, category) {
-                                    tableBody += `
-                                                 <tr name="row-${user.Id}">
-                                                    <td>${user.Id}</td>
-                                                    <td>${user.UserName}</td>
-                                                    <td>${user.Email}</td>
-                                                    <td>${user.PhoneNumber}</td>
-                                                    <td>${user.Picture}</td>
-                                                    <td class="edit-icon">
-                                                        <button class="btn btn-primary btn-edit btn-sm" data-id=${user.Id}><span class="fas fa-edit"></span></button>
-                                                        <button class="btn btn-danger btn-delete btn-sm" data-id=${user.Id}><span class="fas fa-minus-circle"></span></button>
-                                                    </td>
-                                                </tr>
-                                                `;
+                            const userListDto = jQuery.parseJSON(data); // Serialize Data
+                            dataTable.clear(); // Clear DataTable
+                            if (userListDto.ResultStatus === 0) {  // 0 => Operation Success, 1 => Operation Fail.
+                                $.each(userListDto.Users.$values, function (index, user) {
+                                    dataTable.row.add([
+                                        user.Id,
+                                        user.UserName,
+                                        user.Email,
+                                        user.PhoneNumber,
+                                        `<img src="/img/${user.Picture}" class="my-image-table" alt="${user.Picture}"/>`,
+                                        `<button class="btn btn-primary btn-edit btn-sm" data-id="${user.Id}"><span class="fas fa-edit"></span></button>
+                                         <button class="btn btn-danger btn-delete btn-sm" data-id="${user.Id}"><span class="fas fa-minus-circle"></span></button>`
+                                    ]);
+                                    dataTable.draw(); // Draw & Build DataTable.
                                 });
-                                $('#usersTable > tbody').replaceWith(tableBody);
                                 $('.spinner-border').hide();
                                 $('#usersTable').fadeIn(1500);
                             } else {
@@ -301,17 +296,14 @@
                             userAddAjaxModel.UserDto.User.UserName,
                             userAddAjaxModel.UserDto.User.Email,
                             userAddAjaxModel.UserDto.User.PhoneNumber,
-                            userAddAjaxModel.UserDto.User.Picture,
                             `<img src="/img/${userAddAjaxModel.UserDto.User.Picture}" style="max-width:160px" alt="${userAddAjaxModel.UserDto.User.Picture}"/>`,
-                            `<td class="edit-icon">
-                                <button class="btn btn-primary btn-edit btn-sm" data-id="userAddAjaxModel.UserDto.User.Id"><span class="fas fa-edit"></span></button>
-                                <button class="btn btn-danger btn-delete btn-sm" data-id="userAddAjaxModel.UserDto.User.Id"><span class="fas fa-minus-circle"></span></button>
-                            </td>`
+                            `<button class="btn btn-primary btn-edit btn-sm" data-id="${userAddAjaxModel.UserDto.User.Id}"><span class="fas fa-edit"></span></button>
+                            <button class="btn btn-danger btn-delete btn-sm" data-id="${userAddAjaxModel.UserDto.User.Id}"><span class="fas fa-minus-circle"></span></button>`
                         ]).draw();
 
                         Swal.fire(
                             'Ekleme Başarılı!',
-                            `${userAddAjaxModel.CategoryDto.Category.Name} adlı kullanıcı başarıyla eklendi!`,
+                            `${user.UserName} adlı kullanıcı başarıyla eklendi!`,
                             'success'
                         );
                     }
@@ -331,18 +323,17 @@
         });
 
         /* AJAX-POST -> Posting form datas using userAddDto ends here. */
-        /* AJAX-POST -> Deleting categories starts here. */
+        /* AJAX-POST -> Deleting users starts here. */
 
         $(document).on('click', '.btn-delete', function (e) {
             let id = $(this).data('id');
             let tableRow = $(`[name=row-${id}]`);
-            let categoryName = tableRow.find('td:eq(1)').text(); // 2.sıradaki table data(td) alınarak kategori adını bulduk.
+            let userName = tableRow.find('td:eq(1)').text(); 
 
             // Using 'Sweet Alert' library for asking "Are You Sure?" questions to user.
-
             Swal.fire({
                 title: 'Silme İşlemi',
-                text: `${categoryName} adlı kategoriyi silmek istediğinize emin misiniz?`,
+                text: `${userName} adlı kategoriyi silmek istediğinize emin misiniz?`,
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
@@ -355,23 +346,23 @@
                         type: 'POST',
                         dataType: 'json',
                         data: {
-                            categoryId: id
+                            userId: id
                         },
-                        url: '/Admin/Category/Delete',
+                        url: '/Admin/User/Delete',
                         success: function (data) {
-                            let categoryDto = jQuery.parseJSON(data);
-                            if (categoryDto.ResultStatus === 0) {
+                            let userDto = jQuery.parseJSON(data);
+                            if (userDto.ResultStatus === 0) {
                                 Swal.fire(
                                     'Silme Başarılı!',
-                                    `${categoryDto.Category.Name} adlı kategori başarıyla silindi.`,
+                                    `${userDto.User.UserName} adlı kullanıcı başarıyla silindi.`,
                                     'success'
                                 );
-                                tableRow.fadeOut(2000);
+                                dataTable.row.remove(tableRow).draw();
                             }
                             else {
                                 Swal.fire(
                                     'Silme Başarısız!',
-                                    `${categoryDto.Message}`,
+                                    `${userDto.Message}`,
                                     'error'
                                 );
                             }
@@ -383,11 +374,10 @@
                     });
                 }
             });
-
             e.preventDefault();
         });
 
-        /* AJAX-POST -> Deleting categories ends here. */
+        /* AJAX-POST -> Deleting users ends here. */
 
     });
 
@@ -395,61 +385,43 @@
 
         // Autoloading process for UPDATING elements starts here.
 
-        const url = '/Admin/Category/Update';
+        const url = '/Admin/User/Update';
         const placeHolderDiv = $('#modalPlaceHolder');
         $(document).on('click', '.btn-edit', function (e) {
             const id = $(this).attr('data-id');
-            $.get(url, { categoryId: id }).done(function (data) {
+            $.get(url, { userId: id }).done(function (data) {
                 placeHolderDiv.html(data);
                 placeHolderDiv.find('.modal').modal('show');
             }).fail(function (response) {
-                // Hata Yakalama
                 console.error("Ajax Error:" + response);
             });
             e.preventDefault();
         });
 
-        // Autoloading process for UPDATING elements starts here.
+        // Autoloading process for UPDATING elements ends here.
         // Updating users starts from here.
 
         placeHolderDiv.on('click', '#btnUpdateSave', function (e) {
-            let form = $('#form-category-update');
+            debugger
+            let form = $('#form-user-update');
             let actionUrl = form.attr('action');
             let dataToSend = form.serialize();
             $.post(actionUrl, dataToSend).done(function (data) {
-                let categoryUpdateAjaxModel = jQuery.parseJSON(data);
-                console.log(categoryUpdateAjaxModel);
-                let newFormBody = $('.modal-body', categoryUpdateAjaxModel.CategoryUpdatePartial); // Searching in objet
+                let userUpdateAjaxModel = jQuery.parseJSON(data);
+                console.log(userUpdateAjaxModel);
+                let newFormBody = $('.modal-body', userUpdateAjaxModel.UserUpdatePartial); // Searching in object
                 placeHolderDiv.find('.modal-body').replaceWith(newFormBody);
                 let isValid = newFormBody.find('[name="IsValid"]').val() === 'True';
                 if (isValid) {
                     placeHolderDiv.find('.modal').modal('hide');
-                    let newTableRow = `
-                        <tr name="row-${categoryUpdateAjaxModel.CategoryDto.Category.Id}">
-                            <td>${categoryUpdateAjaxModel.CategoryDto.Category.Id}</td>
-                            <td>${categoryUpdateAjaxModel.CategoryDto.Category.Name}</td>
-                            <td>${categoryUpdateAjaxModel.CategoryDto.Category.Description}</td>
-                            <td>${ConvertFirstLetterToUpperCase(categoryUpdateAjaxModel.CategoryDto.Category.IsActive.toString())}</td>
-                            <td>${ConvertFirstLetterToUpperCase(categoryUpdateAjaxModel.CategoryDto.Category.IsDeleted.toString())}</td>
-                            <td>${categoryUpdateAjaxModel.CategoryDto.Category.Note}</td>
-                            <td>${ConvertToShortDate(categoryUpdateAjaxModel.CategoryDto.Category.CreatedDate)}</td>
-                            <td>${categoryUpdateAjaxModel.CategoryDto.Category.CreatedByName}</td>
-                            <td>${ConvertToShortDate(categoryUpdateAjaxModel.CategoryDto.Category.ModifiedDate)}</td>
-                            <td>${categoryUpdateAjaxModel.CategoryDto.Category.ModifiedByName}</td>
-                            <td class="edit-icon">
-                                <button class="btn btn-primary btn-edit btn-sm" data-id=${categoryUpdateAjaxModel.CategoryDto.Category.Id}><span class="fas fa-edit"></span></button>
-                                <button class="btn btn-danger  btn-delete btn-sm" data-id=${categoryUpdateAjaxModel.CategoryDto.Category.Id}><span class="fas fa-minus-circle"></span></button>
-                            </td>
-                        </tr>`;
-
                     let newTableRowObject = $(newTableRow);
-                    let categoryTableRow = $(`[name="row-${categoryUpdateAjaxModel.CategoryDto.Category.Id}"]`);
+                    let userTableRow = $(`[name="row-${userUpdateAjaxModel.UserDto.User.Id}"]`);
                     newTableRowObject.hide();
-                    categoryTableRow.replaceWith(newTableRowObject);
+                    userTableRow.replaceWith(newTableRowObject);
                     newTableRowObject.fadeIn(3000);
                     Swal.fire(
                         'Güncelleme Başarılı!',
-                        `${categoryUpdateAjaxModel.CategoryDto.Category.Name} adlı kategori başarıyla güncellendi.`,
+                        `${userUpdateAjaxModel.UserDto.User.UserName} adlı kategori başarıyla güncellendi.`,
                         'success'
                     );
                 } else {

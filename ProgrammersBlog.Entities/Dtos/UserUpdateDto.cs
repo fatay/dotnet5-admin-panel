@@ -27,15 +27,7 @@ namespace ProgrammersBlog.Entities.Dtos
         [MaxLength(100, ErrorMessage = "{0} {1} karakterden fazla olmamalıdır.")]
         [MinLength(10, ErrorMessage = "{0} {1} karakterden az olmamalıdır.")]
         [DataType(DataType.EmailAddress)]
-        public string EMail { get; set; }
-
-
-        [DisplayName("Şifre")]
-        [Required(ErrorMessage = "{0} boş geçilmemelidir.")]
-        [MaxLength(30, ErrorMessage = "{0} {1} karakterden fazla olmamalıdır.")]
-        [MinLength(5, ErrorMessage = "{0} {1} karakterden az olmamalıdır.")]
-        [DataType(DataType.Password)]
-        public string Password { get; set; }
+        public string Email { get; set; }
 
 
         [DisplayName("Telefon Numarası")]
@@ -46,12 +38,12 @@ namespace ProgrammersBlog.Entities.Dtos
         public string PhoneNumber { get; set; }
 
 
-        [DisplayName("Resim")]
-        [Required(ErrorMessage = "Lütfen bir {0} seçiniz.")]
+        [DisplayName("Resim Ekle")]
         [DataType(DataType.Upload)]
         public IFormFile PictureFile { get; set; }
 
         // Name of the picture 
+        [DisplayName("Resim")]
         public string Picture { get; set; }
     }
 }

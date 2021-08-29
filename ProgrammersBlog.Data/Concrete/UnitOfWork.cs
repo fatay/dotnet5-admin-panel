@@ -17,7 +17,7 @@ namespace ProgrammersBlog.Data.Concrete
             _context = context;
         }
 
-        // ?? => null ise demektir. (Null Coalescing Operator)
+        // ?? => Is it null ?? (Null Coalescing Operator)
         public IArticleRepository Articles => _articleRepository ?? new EfArticleRepository(_context);
 
         public ICategoryRepository Categories => _categoryRepository ?? new EfCategoryRepository(_context);
@@ -27,7 +27,7 @@ namespace ProgrammersBlog.Data.Concrete
 
         public async Task<int> SaveAsync()
         {
-            // Değişiklikleri kaydet ve commitle.
+            // Save changes and commit.
             return await _context.SaveChangesAsync();
         }
 

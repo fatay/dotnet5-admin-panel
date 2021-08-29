@@ -68,7 +68,7 @@ namespace ProgrammersBlog.MVC.Areas.Admin.Controllers
         {
             if (ModelState.IsValid) // Is validation completed successfully;
             {
-                userAddDto.Picture = await ImageUpload(userAddDto); // Update image and assign name to userAddDto
+                userAddDto.Picture = await ImageUpload(userAddDto.UserName, userAddDto.PictureFile); // Update image and assign name to userAddDto
                 var user = _mapper.Map<User>(userAddDto);   // Mapping userAddDto => User using AutoMapper
                 var result = await _userManager.CreateAsync(user, userAddDto.Password); // Create user asynchronously.
                 if (result.Succeeded)

@@ -34,7 +34,7 @@
                             dataTable.clear(); // Clear DataTable
                             if (userListDto.ResultStatus === 0) {  // 0 => Operation Success, 1 => Operation Fail.
                                 $.each(userListDto.Users.$values, function (index, user) {
-                                    dataTable.row.add([
+                                    const newTableRow = dataTable.row.add([
                                         user.Id,
                                         user.UserName,
                                         user.Email,
@@ -42,7 +42,9 @@
                                         `<img src="/img/${user.Picture}" class="my-image-table" alt="${user.Picture}"/>`,
                                         `<button class="btn btn-primary btn-edit btn-sm" data-id="${user.Id}"><span class="fas fa-edit"></span></button>
                                          <button class="btn btn-danger btn-delete btn-sm" data-id="${user.Id}"><span class="fas fa-minus-circle"></span></button>`
-                                    ]);
+                                    ]).node();
+                                    const jqueryTableRow = $(newTableRow);
+                                    jqueryTableRow.attr("name",`row-${user.Id}`);
                                     dataTable.draw(); // Draw & Build DataTable.
                                 });
                                 $('.spinner-border').hide();
@@ -254,10 +256,9 @@
 
     /* Datatable ends here. */
 
+    /* AJAX-GET  -> Getting and transporting _userAddPartial infos starts here. */
+
     $(function () {
-
-        /* AJAX-GET  -> Getting and transporting _userAddPartial infos starts here. */
-
         const url = '/Admin/User/Add';
         const placeHolderDiv = $('#modalPlaceHolder');
         $('#btnAdd').click(function (e) {
@@ -290,7 +291,7 @@
                     let isValid = newFormBody.find('[name="IsValid"]').val() === 'True';
                     if (isValid) {
                         placeHolderDiv.find('.modal').modal('hide');
-                        dataTable.row.add([
+                        const newTableRow = dataTable.row.add([
                             userAddAjaxModel.UserDto.User.Id,
                             userAddAjaxModel.UserDto.User.UserName,
                             userAddAjaxModel.UserDto.User.Email,
@@ -298,11 +299,13 @@
                             `<img src="/img/${userAddAjaxModel.UserDto.User.Picture}" alt="${userAddAjaxModel.UserDto.User.Picture}" class="my-image-table"/>`,
                             `<button class="btn btn-primary btn-edit btn-sm" data-id="${userAddAjaxModel.UserDto.User.Id}"><span class="fas fa-edit"></span></button>
                             <button class="btn btn-danger btn-delete btn-sm" data-id="${userAddAjaxModel.UserDto.User.Id}"><span class="fas fa-minus-circle"></span></button>`
-                        ]).draw();
-
+                        ]).node();
+                        const jqueryTableRow = $(newTableRow);
+                        jqueryTableRow.attr("name", `row-${userAddAjaxModel.UserDto.User.Id}`);
+                        dataTable.draw(); // Draw & Build DataTable.
                         Swal.fire(
                             'Ekleme Başarılı!',
-                            `${user.UserName} adlı kullanıcı başarıyla eklendi!`,
+                            `${userAddAjaxModel.UserDto.User.UserName} adlı kullanıcı başarıyla eklendi!`,
                             'success'
                         );
                     }
@@ -322,12 +325,87 @@
         });
 
         /* AJAX-POST -> Posting form datas using userAddDto ends here. */
-        /* AJAX-POST -> Deleting users starts here. */
 
+        // Autoloading process for UPDATING elements starts here.
+
+        $(function () {
+            const url = '/Admin/User/Update';
+            const placeHolderDiv = $('#modalPlaceHolder');
+            $(document).on('click', '.btn-edit', function (e) {
+                const id = $(this).attr('data-id');
+                $.get(url, { userId: id }).done(function (data) {
+                    placeHolderDiv.html(data);
+                    placeHolderDiv.find('.modal').modal('show');
+                }).fail(function (response) {
+                    console.error("Ajax Error:" + response);
+                });
+                e.preventDefault();
+            });
+        });
+
+        // Autoloading process for UPDATING elements ends here.
+
+        // Updating users starts from here.
+        placeHolderDiv.on('click', '#btnUpdateSave', function (e) {
+            let form = $('#form-user-update');
+            let actionUrl = form.attr('action');
+            let dataToSend = new FormData(form.get(0)); // Get form data that it's index eq 0. 
+            $.ajax({
+                url: actionUrl,
+                type: 'POST',
+                data: dataToSend,
+                processData: false,
+                contentType: false,
+                success: function (data) {
+                    let userUpdateAjaxModel = jQuery.parseJSON(data);
+                    const id = userUpdateAjaxModel.UserDto.User.Id;
+                    const tableRow = $(`[name="row-${id}"]`);
+                    let newFormBody = $('.modal-body', userUpdateAjaxModel.UserUpdatePartial); // Searching in object
+                    placeHolderDiv.find('.modal-body').replaceWith(newFormBody);
+                    let isValid = newFormBody.find('[name="IsValid"]').val() === 'True';
+                    if (isValid) {
+                        placeHolderDiv.find('.modal').modal('hide');
+                        dataTable.row(tableRow).data([
+                            userUpdateAjaxModel.UserDto.User.Id,
+                            userUpdateAjaxModel.UserDto.User.UserName,
+                            userUpdateAjaxModel.UserDto.User.Email,
+                            userUpdateAjaxModel.UserDto.User.PhoneNumber,
+                            `<img src="/img/${userUpdateAjaxModel.UserDto.User.Picture}" alt="${userUpdateAjaxModel.UserDto.User.Picture}" class="my-image-table"/>`,
+                            `<button class="btn btn-primary btn-edit btn-sm" data-id="${userUpdateAjaxModel.UserDto.User.Id}"><span class="fas fa-edit"></span></button>
+                            <button class="btn btn-danger btn-delete btn-sm" data-id="${userUpdateAjaxModel.UserDto.User.Id}"><span class="fas fa-minus-circle"></span></button>`
+                        ]);
+                        tableRow.attr("name", `row-${id}`); // For adding name attribute and handling this element.
+                        dataTable.row(tableRow).invalidate(); // Update dataTable dataset.
+                        Swal.fire(
+                            'Güncelleme Başarılı!',
+                            `${userUpdateAjaxModel.UserDto.User.UserName} adlı kategori başarıyla güncellendi.`,
+                            'success'
+                        );
+                    } else {
+                        $('#validation-summary > ul > li').each(function () {
+                            let text = $(this).text();
+                            summaryText = `*${text}\n`;
+                        });
+                        toastr.warning(summaryText);
+                    }
+                },
+                error: function (error) {
+                    console.log(error);
+                }
+            }).fail(function (response) {
+                console.error("Ajax Error:" + response);
+            });
+
+            e.preventDefault();
+        });
+        // Updating users ends from here.
+
+
+        /* AJAX-POST -> Deleting users starts here. */
         $(document).on('click', '.btn-delete', function (e) {
             let id = $(this).data('id');
             let tableRow = $(`[name=row-${id}]`);
-            let userName = tableRow.find('td:eq(1)').text(); 
+            let userName = tableRow.find('td:eq(1)').text();
 
             // Using 'Sweet Alert' library for asking "Are You Sure?" questions to user.
             Swal.fire({
@@ -356,7 +434,7 @@
                                     `${userDto.User.UserName} adlı kullanıcı başarıyla silindi.`,
                                     'success'
                                 );
-                                dataTable.row.remove(tableRow).draw();
+                                dataTable.row().remove(tableRow).draw();
                             }
                             else {
                                 Swal.fire(
@@ -379,84 +457,5 @@
         /* AJAX-POST -> Deleting users ends here. */
 
     });
-
-    $(function () {
-
-        // Autoloading process for UPDATING elements starts here.
-
-        const url = '/Admin/User/Update';
-        const placeHolderDiv = $('#modalPlaceHolder');
-        $(document).on('click', '.btn-edit', function (e) {
-            const id = $(this).attr('data-id');
-            $.get(url, { userId: id }).done(function (data) {
-                placeHolderDiv.html(data);
-                placeHolderDiv.find('.modal').modal('show');
-            }).fail(function (response) {
-                console.error("Ajax Error:" + response);
-            });
-            e.preventDefault();
-        });
-
-        // Autoloading process for UPDATING elements ends here.
-        // Updating users starts from here.
-
-        placeHolderDiv.on('click', '#btnUpdateSave', function (e) {
-            let form = $('#form-user-update');
-            let actionUrl = form.attr('action');
-            $.ajax({
-                url: actionUrl,
-                type: 'POST',
-                data: dataToSend,
-                processData: false,
-                contentType: false,
-                success: function (data) {
-                    let userUpdateAjaxModel = jQuery.parseJSON(data);
-                    console.log(userUpdateAjaxModel);
-                    const id = userUpdateAjaxModel.UserDto.User.Id;
-                    const tableRow = $(`[name="row-${id}"]`);
-                    let newFormBody = $('.modal-body', userUpdateAjaxModel.UserUpdatePartial); // Searching in object
-                    placeHolderDiv.find('.modal-body').replaceWith(newFormBody);
-                    let isValid = newFormBody.find('[name="IsValid"]').val() === 'True';
-                    if (isValid) {
-                        placeHolderDiv.find('.modal').modal('hide');
-                        dataTable.row(tableRow).data([
-                            userAddAjaxModel.UserDto.User.Id,
-                            userAddAjaxModel.UserDto.User.UserName,
-                            userAddAjaxModel.UserDto.User.Email,
-                            userAddAjaxModel.UserDto.User.PhoneNumber,
-                            `<img src="/img/${userAddAjaxModel.UserDto.User.Picture}" alt="${userAddAjaxModel.UserDto.User.Picture}" class="my-image-table"/>`,
-                            `<button class="btn btn-primary btn-edit btn-sm" data-id="${userAddAjaxModel.UserDto.User.Id}"><span class="fas fa-edit"></span></button>
-                            <button class="btn btn-danger btn-delete btn-sm" data-id="${userAddAjaxModel.UserDto.User.Id}"><span class="fas fa-minus-circle"></span></button>`
-                        ]);
-                        tableRow.attr("name", `row-${id}`);
-                        dataTable.row(tableRow).invalidate(); // Update dataTable dataset.
-                        Swal.fire(
-                            'Güncelleme Başarılı!',
-                            `${userUpdateAjaxModel.UserDto.User.UserName} adlı kategori başarıyla güncellendi.`,
-                            'success'
-                        );
-                    } else {
-                        $('#validation-summary > ul > li').each(function () {
-                            let text = $(this).text();
-                            summaryText = `*${text}\n`;
-                        });
-                        toastr.warning(summaryText);
-                    }
-                },
-                error: function (error) {
-                    console.log(error);
-                }
-            }).fail(function (response) {
-                console.error("Ajax Error:" + response);
-            });
-
-            e.preventDefault();
-        });
-
-        // Updating users ends from here.
-
-    });
-
-
 
 });

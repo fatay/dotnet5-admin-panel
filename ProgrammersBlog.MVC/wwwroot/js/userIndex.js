@@ -277,7 +277,6 @@
             let form = $('#form-user-add');
             let actionUrl = form.attr('action');
             let dataToSend = new FormData(form.get(0)); // Get form data that it's index eq 0. 
-
             $.ajax({
                 url: actionUrl,
                 type: 'POST',
@@ -296,7 +295,7 @@
                             userAddAjaxModel.UserDto.User.UserName,
                             userAddAjaxModel.UserDto.User.Email,
                             userAddAjaxModel.UserDto.User.PhoneNumber,
-                            `<img src="/img/${userAddAjaxModel.UserDto.User.Picture}" style="max-width:160px" alt="${userAddAjaxModel.UserDto.User.Picture}"/>`,
+                            `<img src="/img/${userAddAjaxModel.UserDto.User.Picture}" alt="${userAddAjaxModel.UserDto.User.Picture}" class="my-image-table"/>`,
                             `<button class="btn btn-primary btn-edit btn-sm" data-id="${userAddAjaxModel.UserDto.User.Id}"><span class="fas fa-edit"></span></button>
                             <button class="btn btn-danger btn-delete btn-sm" data-id="${userAddAjaxModel.UserDto.User.Id}"><span class="fas fa-minus-circle"></span></button>`
                         ]).draw();
@@ -402,34 +401,50 @@
         // Updating users starts from here.
 
         placeHolderDiv.on('click', '#btnUpdateSave', function (e) {
-            debugger
             let form = $('#form-user-update');
             let actionUrl = form.attr('action');
-            let dataToSend = form.serialize();
-            $.post(actionUrl, dataToSend).done(function (data) {
-                let userUpdateAjaxModel = jQuery.parseJSON(data);
-                console.log(userUpdateAjaxModel);
-                let newFormBody = $('.modal-body', userUpdateAjaxModel.UserUpdatePartial); // Searching in object
-                placeHolderDiv.find('.modal-body').replaceWith(newFormBody);
-                let isValid = newFormBody.find('[name="IsValid"]').val() === 'True';
-                if (isValid) {
-                    placeHolderDiv.find('.modal').modal('hide');
-                    let newTableRowObject = $(newTableRow);
-                    let userTableRow = $(`[name="row-${userUpdateAjaxModel.UserDto.User.Id}"]`);
-                    newTableRowObject.hide();
-                    userTableRow.replaceWith(newTableRowObject);
-                    newTableRowObject.fadeIn(3000);
-                    Swal.fire(
-                        'Güncelleme Başarılı!',
-                        `${userUpdateAjaxModel.UserDto.User.UserName} adlı kategori başarıyla güncellendi.`,
-                        'success'
-                    );
-                } else {
-                    $('#validation-summary > ul > li').each(function () {
-                        let text = $(this).text();
-                        summaryText = `*${text}\n`;
-                    });
-                    toastr.warning(summaryText);
+            $.ajax({
+                url: actionUrl,
+                type: 'POST',
+                data: dataToSend,
+                processData: false,
+                contentType: false,
+                success: function (data) {
+                    let userUpdateAjaxModel = jQuery.parseJSON(data);
+                    console.log(userUpdateAjaxModel);
+                    const id = userUpdateAjaxModel.UserDto.User.Id;
+                    const tableRow = $(`[name="row-${id}"]`);
+                    let newFormBody = $('.modal-body', userUpdateAjaxModel.UserUpdatePartial); // Searching in object
+                    placeHolderDiv.find('.modal-body').replaceWith(newFormBody);
+                    let isValid = newFormBody.find('[name="IsValid"]').val() === 'True';
+                    if (isValid) {
+                        placeHolderDiv.find('.modal').modal('hide');
+                        dataTable.row(tableRow).data([
+                            userAddAjaxModel.UserDto.User.Id,
+                            userAddAjaxModel.UserDto.User.UserName,
+                            userAddAjaxModel.UserDto.User.Email,
+                            userAddAjaxModel.UserDto.User.PhoneNumber,
+                            `<img src="/img/${userAddAjaxModel.UserDto.User.Picture}" alt="${userAddAjaxModel.UserDto.User.Picture}" class="my-image-table"/>`,
+                            `<button class="btn btn-primary btn-edit btn-sm" data-id="${userAddAjaxModel.UserDto.User.Id}"><span class="fas fa-edit"></span></button>
+                            <button class="btn btn-danger btn-delete btn-sm" data-id="${userAddAjaxModel.UserDto.User.Id}"><span class="fas fa-minus-circle"></span></button>`
+                        ]);
+                        tableRow.attr("name", `row-${id}`);
+                        dataTable.row(tableRow).invalidate(); // Update dataTable dataset.
+                        Swal.fire(
+                            'Güncelleme Başarılı!',
+                            `${userUpdateAjaxModel.UserDto.User.UserName} adlı kategori başarıyla güncellendi.`,
+                            'success'
+                        );
+                    } else {
+                        $('#validation-summary > ul > li').each(function () {
+                            let text = $(this).text();
+                            summaryText = `*${text}\n`;
+                        });
+                        toastr.warning(summaryText);
+                    }
+                },
+                error: function (error) {
+                    console.log(error);
                 }
             }).fail(function (response) {
                 console.error("Ajax Error:" + response);

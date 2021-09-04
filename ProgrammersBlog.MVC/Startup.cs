@@ -29,7 +29,7 @@ namespace ProgrammersBlog.MVC
             services.LoadMyServices(); // Load all services.
             services.ConfigureApplicationCookie(options => {
                 options.LoginPath = new PathString("/Admin/User/Login");  // Auto routing for non-logged in users.
-                options.LoginPath = new PathString("/Admin/User/Logout"); // Auto routing for logged out users.
+                options.LogoutPath = new PathString("/Admin/User/Logout"); // Auto routing for logged out users.
                 options.Cookie = new CookieBuilder { 
                     Name = "ProgrammersBlog", // Name of the cookie
                     HttpOnly = true, // For preventing XSS attacks

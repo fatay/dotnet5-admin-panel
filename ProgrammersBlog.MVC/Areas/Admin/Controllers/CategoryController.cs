@@ -7,10 +7,12 @@ using ProgrammersBlog.MVC.Areas.Admin.Models;
 using ProgrammersBlog.Shared.Utilities.Extensions;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ProgrammersBlog.MVC.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize]
     public class CategoryController : Controller
     {
         private readonly ICategoryService _categoryService;

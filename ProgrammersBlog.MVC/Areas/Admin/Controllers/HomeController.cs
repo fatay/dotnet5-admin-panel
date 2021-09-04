@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace ProgrammersBlog.MVC.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize]
     public class HomeController : Controller
     {
         public IActionResult Index()

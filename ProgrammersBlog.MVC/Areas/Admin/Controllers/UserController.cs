@@ -21,6 +21,7 @@ using System.Threading.Tasks;
 namespace ProgrammersBlog.MVC.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = "Admin")]
     public class UserController : Controller
     {
         // Dependencies
@@ -29,6 +30,7 @@ namespace ProgrammersBlog.MVC.Areas.Admin.Controllers
         private readonly IMapper _mapper;
         private readonly SignInManager<User> _signInManager;
 
+        // Dependency Injection
         public UserController(UserManager<User> userManager, IWebHostEnvironment env, IMapper mapper, SignInManager<User> signInManager)
         {
             _userManager = userManager;
@@ -37,7 +39,7 @@ namespace ProgrammersBlog.MVC.Areas.Admin.Controllers
             _signInManager = signInManager;
         }
 
-        [Authorize]
+        [Authorize(Roles ="Admin")]
         public async Task<IActionResult> Index()
         {
             var users = await _userManager.Users.ToListAsync();
@@ -86,7 +88,7 @@ namespace ProgrammersBlog.MVC.Areas.Admin.Controllers
             }
         }
 
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<JsonResult> GetAllUsers()
         {
@@ -102,14 +104,14 @@ namespace ProgrammersBlog.MVC.Areas.Admin.Controllers
             return Json(userListDto);
         }
 
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public IActionResult Add()
         {
             return PartialView("_UserAddPartial");
         }
 
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> Add(UserAddDto userAddDto)
         {
@@ -154,7 +156,7 @@ namespace ProgrammersBlog.MVC.Areas.Admin.Controllers
             return Json(userAddAjaxStateErrorModel);
         }
 
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<PartialViewResult> Update(int userId)
         {
@@ -163,7 +165,7 @@ namespace ProgrammersBlog.MVC.Areas.Admin.Controllers
             return PartialView("_UserUpdatePartial", userUpdateDto);
         }
 
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> Update(UserUpdateDto userUpdateDto)
         {
@@ -229,7 +231,7 @@ namespace ProgrammersBlog.MVC.Areas.Admin.Controllers
             }
         }
 
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task<JsonResult> Delete(int userId)
         {
             var user = await _userManager.FindByIdAsync(userId.ToString());
@@ -261,7 +263,7 @@ namespace ProgrammersBlog.MVC.Areas.Admin.Controllers
             }
         }
 
-        [Authorize]
+        [Authorize(Roles = "Admin,Editor")]
         public async Task<string> ImageUpload(string userName, IFormFile pictureFile)
         {
             // Accessing img : [~][AltGr+Ü] => "~/img/userFileName.png"
@@ -277,7 +279,7 @@ namespace ProgrammersBlog.MVC.Areas.Admin.Controllers
             return fileNameWithExtension;
         }
 
-        [Authorize]
+        [Authorize(Roles = "Admin,Editor")]
         public bool ImageDelete(string pictureName)
         {
             string wwwroot = _env.WebRootPath; // Get current wwwroot path.

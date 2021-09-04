@@ -1,11 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using ProgrammersBlog.Entities.Concrete;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ProgrammersBlog.Data.Concrete.EntityFramework.Mappings
 {
@@ -16,7 +11,7 @@ namespace ProgrammersBlog.Data.Concrete.EntityFramework.Mappings
         {
             // Id
             builder.HasKey(a => a.Id);                                  // Article bir primary keye sahiptir ve bu "Id" dir.
-            builder.Property(a=>a.Id).ValueGeneratedOnAdd();            // AutoIncrementation yapılır.
+            builder.Property(a => a.Id).ValueGeneratedOnAdd();            // AutoIncrementation yapılır.
             // Title
             builder.Property(a => a.Title).HasMaxLength(100);           // Maksimum 100 karakterden oluşmalı.
             builder.Property(a => a.Title).IsRequired(true);            // Zorunlu alandır.

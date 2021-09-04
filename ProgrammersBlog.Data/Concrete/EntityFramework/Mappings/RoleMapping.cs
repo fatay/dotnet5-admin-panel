@@ -2,10 +2,6 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using ProgrammersBlog.Entities.Concrete;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ProgrammersBlog.Data.Concrete.EntityFramework.Mappings
 {
@@ -46,10 +42,11 @@ namespace ProgrammersBlog.Data.Concrete.EntityFramework.Mappings
                 NormalizedName = "ADMIN",
                 ConcurrencyStamp = Guid.NewGuid().ToString()
             };
-            
+
             // Creating editor role
-            var editorRole = new Role { 
-                Id = 2, 
+            var editorRole = new Role
+            {
+                Id = 2,
                 Name = "Editor",
                 NormalizedName = "EDITOR",
                 ConcurrencyStamp = Guid.NewGuid().ToString()

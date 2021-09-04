@@ -7,9 +7,6 @@ using ProgrammersBlog.Shared.Utilities.Results.Abstract;
 using ProgrammersBlog.Shared.Utilities.Results.Concrete;
 using ProgrammersBlog.Shared.Utilities.Results.Types;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace ProgrammersBlog.Services.Concrete
@@ -30,7 +27,8 @@ namespace ProgrammersBlog.Services.Concrete
             var article = await _unitOfWork.Articles.GetAsync(a => a.Id == articleId, a => a.User, a => a.Category);
             if (article != null)
             {
-                return new DataResult<ArticleDto>(ResultStatus.Success, new ArticleDto { 
+                return new DataResult<ArticleDto>(ResultStatus.Success, new ArticleDto
+                {
                     Article = article,
                     ResultStatus = ResultStatus.Success
                 });
@@ -43,7 +41,8 @@ namespace ProgrammersBlog.Services.Concrete
             var articles = await _unitOfWork.Articles.GetAllAsync(null, a => a.User, a => a.Category);
             if (articles.Count > -1)
             {
-                return new DataResult<ArticleListDto>(ResultStatus.Success, new ArticleListDto { 
+                return new DataResult<ArticleListDto>(ResultStatus.Success, new ArticleListDto
+                {
                     Articles = articles,
                     ResultStatus = ResultStatus.Success
                 });
@@ -60,7 +59,8 @@ namespace ProgrammersBlog.Services.Concrete
 
                 if (articles.Count > -1)
                 {
-                    return new DataResult<ArticleListDto>(ResultStatus.Success, new ArticleListDto { 
+                    return new DataResult<ArticleListDto>(ResultStatus.Success, new ArticleListDto
+                    {
                         Articles = articles,
                         ResultStatus = ResultStatus.Success
                     });
@@ -105,7 +105,7 @@ namespace ProgrammersBlog.Services.Concrete
             article.CreatedDate = DateTime.Now;
             article.CreatedByName = createdByName;
             article.UserId = 1;
-             
+
             await _unitOfWork.Articles.AddAsync(article).ContinueWith(t => _unitOfWork.SaveAsync());
             return new Result(ResultStatus.Success, $"{articleAddDto.Title} başlıklı makale başarıyla eklendi.");
         }

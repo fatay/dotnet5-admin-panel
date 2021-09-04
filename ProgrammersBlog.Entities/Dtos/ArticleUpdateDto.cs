@@ -1,11 +1,7 @@
 ﻿using ProgrammersBlog.Entities.Concrete;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ProgrammersBlog.Entities.Dtos
 {
@@ -53,7 +49,7 @@ namespace ProgrammersBlog.Entities.Dtos
         [DisplayName("Aktif Mi?")] // Makale taslak mı değil mi?
         [Required(ErrorMessage = "{0} alanı boş geçilmemelidir.")]
         public bool IsActive { get; set; }
-        [DisplayName("Silinsin Mi?")] 
+        [DisplayName("Silinsin Mi?")]
         [Required(ErrorMessage = "{0} alanı boş geçilmemelidir.")]
         public bool IsDeleted { get; set; }
     }

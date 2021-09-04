@@ -3,10 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using ProgrammersBlog.Entities.Concrete;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ProgrammersBlog.Data.Concrete.EntityFramework.Mappings
 {
@@ -52,7 +48,8 @@ namespace ProgrammersBlog.Data.Concrete.EntityFramework.Mappings
             builder.HasMany<UserRole>().WithOne().HasForeignKey(ur => ur.UserId).IsRequired();
 
             // Creating admin user
-            var adminUser = new User { 
+            var adminUser = new User
+            {
                 Id = 1,
                 UserName = "adminuser",
                 NormalizedUserName = "ADMINUSER",

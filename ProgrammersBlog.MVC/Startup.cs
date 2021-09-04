@@ -17,7 +17,8 @@ namespace ProgrammersBlog.MVC
         public void ConfigureServices(IServiceCollection services)
         {
             // For our changes to display on the browser page concurrently, we must use the RazorRuntimeCompilation service.
-            services.AddControllersWithViews().AddRazorRuntimeCompilation().AddJsonOptions(opt=> {
+            services.AddControllersWithViews().AddRazorRuntimeCompilation().AddJsonOptions(opt =>
+            {
                 // For returning JSON typed results, we must use JsonSerializer options.
                 // Set the JsonSerializer for startup service.
                 opt.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
@@ -27,19 +28,21 @@ namespace ProgrammersBlog.MVC
             // Adding AutoMapper library for the matching two objects
             services.AddAutoMapper(typeof(CategoryProfile), typeof(ArticleProfile), typeof(UserProfile));
             services.LoadMyServices(); // Load all services.
-            services.ConfigureApplicationCookie(options => {
-                options.LoginPath = new PathString("/Admin/User/Login");  // Auto routing for non-logged in users.
+            services.ConfigureApplicationCookie(options =>
+            {
+                options.LoginPath = new PathString("/Admin/User/Login"); // Auto routing for non-logged in users.
                 options.LogoutPath = new PathString("/Admin/User/Logout"); // Auto routing for logged out users.
-                options.Cookie = new CookieBuilder { 
+                options.Cookie = new CookieBuilder
+                {
                     Name = "ProgrammersBlog", // Name of the cookie
-                    HttpOnly = true, // For preventing XSS attacks
+                    HttpOnly = true,  // For preventing XSS attacks
                     SameSite = SameSiteMode.Strict, // For preventing CSRF attacks request ----> hacker ----> server
                     SecurePolicy = CookieSecurePolicy.SameAsRequest // HTTP <=> HTTP, HTTPS <=> HTTPS (always HTTPS is the best choice)
                 };
-                options.SlidingExpiration = true; // Remember me option
-                options.ExpireTimeSpan = System.TimeSpan.FromDays(3); // User cookie information stored 3 days in the system.
-                options.AccessDeniedPath = new PathString("/Admin/User/AccessDenied"); // If the user doesn't have access to the page (403).
-            }); // Cookie settings.
+                options.SlidingExpiration = true;  // Remember me option
+                options.ExpireTimeSpan = System.TimeSpan.FromDays(7); // User cookie information stored 7 days in the system.
+                options.AccessDeniedPath = new PathString("/Admin/User/AccessDenied");  // If the user doesn't have access to the page (403).
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -50,7 +53,7 @@ namespace ProgrammersBlog.MVC
                 app.UseDeveloperExceptionPage();
                 app.UseStatusCodePages(); // Use HTTP error pages in this project.
             }
-            app.UseSession();   
+            app.UseSession();
             app.UseStaticFiles();
             app.UseRouting();
             app.UseAuthentication(); // This configuration is all about verifying and recognizing users in the system. (Which user?)

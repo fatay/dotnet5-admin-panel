@@ -1,10 +1,5 @@
 ﻿using ProgrammersBlog.Entities.Concrete;
 using ProgrammersBlog.Shared.Data.Abstract;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ProgrammersBlog.Data.Abstract
 {
@@ -17,7 +12,7 @@ namespace ProgrammersBlog.Data.Abstract
           Data Access Layerlarda kullanılacak olan metodları ortak bir imzada
           ve şablonda toplayarak yeniden tanımlama zahmetinden kurtulmuş olduk.
     */
-    public interface ICategoryRepository:IEntityRepository<Category>
+    public interface ICategoryRepository : IEntityRepository<Category>
     {
 
     }

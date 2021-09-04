@@ -1,13 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
-using ProgrammersBlog.Services.Abstract;
-using ProgrammersBlog.Shared.Utilities.Results.Types;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using ProgrammersBlog.Entities.Dtos;
 using ProgrammersBlog.MVC.Areas.Admin.Models;
+using ProgrammersBlog.Services.Abstract;
 using ProgrammersBlog.Shared.Utilities.Extensions;
+using ProgrammersBlog.Shared.Utilities.Results.Types;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using Microsoft.AspNetCore.Authorization;
+using System.Threading.Tasks;
 
 namespace ProgrammersBlog.MVC.Areas.Admin.Controllers
 {
@@ -97,7 +97,8 @@ namespace ProgrammersBlog.MVC.Areas.Admin.Controllers
         public async Task<JsonResult> GetAllCategories()
         {
             var result = await _categoryService.GetAllByNonDeleted();
-            var categories = JsonSerializer.Serialize(result.Data, new JsonSerializerOptions() { 
+            var categories = JsonSerializer.Serialize(result.Data, new JsonSerializerOptions()
+            {
                 ReferenceHandler = ReferenceHandler.Preserve
             });
             return Json(categories);

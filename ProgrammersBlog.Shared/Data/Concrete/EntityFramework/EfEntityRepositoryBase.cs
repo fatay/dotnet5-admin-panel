@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace ProgrammersBlog.Shared.Data.Concrete.EntityFramework
@@ -16,7 +15,7 @@ namespace ProgrammersBlog.Shared.Data.Concrete.EntityFramework
         private readonly DbContext _context;
 
         public EfEntityRepositoryBase(DbContext context)
-        {   
+        {
             _context = context;  // Dependency Injection
         }
 
@@ -39,13 +38,13 @@ namespace ProgrammersBlog.Shared.Data.Concrete.EntityFramework
         public async Task DeleteAsync(TEntity entity)
         {
             // Delete metodu EntityFrameworkta asenkron çalışmadığından run implementasyonu ile asenkron yapıldı.
-            await Task.Run(() => { _context.Set<TEntity>().Remove(entity);});   
+            await Task.Run(() => { _context.Set<TEntity>().Remove(entity); });
         }
 
         public async Task<IList<TEntity>> GetAllAsync(Expression<Func<TEntity, bool>> predicate = null, params Expression<Func<TEntity, object>>[] includeProperties)
         {
             IQueryable<TEntity> query = _context.Set<TEntity>();
-            
+
             // Şart varsa
             if (predicate != null)
             {

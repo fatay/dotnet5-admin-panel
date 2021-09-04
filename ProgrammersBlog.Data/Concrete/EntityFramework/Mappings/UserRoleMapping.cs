@@ -18,6 +18,21 @@ namespace ProgrammersBlog.Data.Concrete.EntityFramework.Mappings
 
             // Maps to the AspNetUserRoles table
             builder.ToTable("AspNetUserRoles");
+
+            // User <=> Role matching
+            var adminRole = new UserRole { 
+                RoleId = 1,
+                UserId = 1
+            };
+
+            var editorRole = new UserRole
+            {
+                RoleId = 2,
+                UserId = 2
+            };
+
+            // If there is no data in DB, put datas to DB.
+            builder.HasData(adminRole, editorRole);
         }
     }
 }

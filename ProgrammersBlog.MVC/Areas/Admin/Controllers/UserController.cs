@@ -31,10 +31,10 @@ namespace ProgrammersBlog.MVC.Areas.Admin.Controllers
 
         public UserController(UserManager<User> userManager, IWebHostEnvironment env, IMapper mapper, SignInManager<User> signInManager)
         {
-            _signInManager = signInManager;
             _userManager = userManager;
             _env = env;
             _mapper = mapper;
+            _signInManager = signInManager;
         }
 
         [Authorize]
@@ -51,10 +51,10 @@ namespace ProgrammersBlog.MVC.Areas.Admin.Controllers
         [HttpGet]
         public IActionResult Login()
         {
-            return View();
+            return View("UserLogin");
         }
 
-        [HttpGet]
+        [HttpPost]
         public async Task<IActionResult> Login(UserLoginDto userLoginDto)
         {
             if (ModelState.IsValid)
@@ -66,7 +66,7 @@ namespace ProgrammersBlog.MVC.Areas.Admin.Controllers
                     var result = await _signInManager.PasswordSignInAsync(user, userLoginDto.Password, userLoginDto.RememberMe, false);
                     if (result.Succeeded)
                     {
-                        RedirectToAction("Index", "Home");
+                        return RedirectToAction("Index", "Home");
                     }
                     else
                     {
@@ -80,7 +80,10 @@ namespace ProgrammersBlog.MVC.Areas.Admin.Controllers
                     return View("UserLogin");
                 }
             }
-            return View("UserLogin");
+            else
+            {
+                return View("UserLogin");
+            }
         }
 
         [Authorize]
